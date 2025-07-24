@@ -12,6 +12,44 @@
 
         <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>
+        
+        <!-- Typing Animation Styles -->
+        <style>
+            .typing-cursor::after {
+                content: '|';
+                animation: blink 1s infinite;
+                color: #4f46e5; /* Indigo color */
+            }
+            
+            @keyframes blink {
+                0%, 50% { opacity: 1; }
+                51%, 100% { opacity: 0; }
+            }
+            
+            .typing-text {
+                overflow: hidden;
+                white-space: nowrap;
+                border-right: 2px solid #4f46e5;
+                animation: typing-complete 0.5s steps(1) forwards;
+                animation-delay: var(--typing-duration);
+            }
+            
+            @keyframes typing-complete {
+                to {
+                    border-right: none;
+                }
+            }
+            
+            /* Fade-in animation for description */
+            .fade-in {
+                opacity: 0;
+                transition: opacity 0.8s ease-in-out;
+            }
+            
+            .fade-in.show {
+                opacity: 1;
+            }
+        </style>
     </head>
     <body class="antialiased">
         <div class="min-h-screen flex flex-col bg-gray-100">
@@ -74,10 +112,9 @@
                         
                         <!-- Text Content - Adjusted to balance the smaller image -->
                         <div class="mt-8 lg:mt-0 lg:ml-8 lg:w-3/5">  <!-- Changed from lg:w-1/2 to lg:w-3/5 -->
-                            <h1 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                                {{ $hero ? $hero->title : 'Welcome to My Portfolio' }}
+                            <h1 id="typing-title" class="text-3xl font-extrabold text-gray-900 sm:text-4xl typing-cursor" data-text="{{ $hero ? $hero->title : 'Welcome to My Portfolio' }}">
                             </h1>
-                            <p class="mt-4 text-lg text-gray-500">
+                            <p id="typing-description" class="mt-4 text-lg text-gray-500 fade-in" data-text="{{ $hero ? $hero->description : 'Passionate developer creating elegant solutions to complex problems.' }}">
                                 {{ $hero ? $hero->description : 'Passionate developer creating elegant solutions to complex problems.' }}
                             </p>
                         </div>
@@ -256,9 +293,42 @@
             </footer>
         </div>
 
-        <!-- Update JavaScript for smooth scrolling to account for sticky navbar -->
+        <!-- Update JavaScript for smooth scrolling and typing animation -->
         <script>
             document.addEventListener('DOMContentLoaded', function() {
+                // Typing Animation for title only
+                const typingTitle = document.getElementById('typing-title');
+                const typingDescription = document.getElementById('typing-description');
+                const titleText = typingTitle.getAttribute('data-text');
+                const titleTypingSpeed = 60; // milliseconds per character for title
+                
+                // Clear initial content for title only
+                typingTitle.textContent = '';
+                
+                let titleIndex = 0;
+                let titleComplete = false;
+                
+                function typeTitle() {
+                    if (titleIndex < titleText.length) {
+                        typingTitle.textContent += titleText.charAt(titleIndex);
+                        titleIndex++;
+                        setTimeout(typeTitle, titleTypingSpeed);
+                    } else {
+                        titleComplete = true;
+                        typingTitle.classList.remove('typing-cursor');
+                        // Start description fade-in after title is complete
+                        setTimeout(() => {
+                            typingDescription.classList.add('show');
+                        }, 300); // Small delay before starting fade-in
+                    }
+                }
+                
+                // Start only the title typing animation initially
+                setTimeout(() => {
+                    typingTitle.classList.add('typing-cursor');
+                    typeTitle();
+                }, 500);
+
                 // Get all the scroll links
                 const scrollLinks = document.querySelectorAll('.scroll-link');
                 const navbarHeight = document.querySelector('nav').offsetHeight;
