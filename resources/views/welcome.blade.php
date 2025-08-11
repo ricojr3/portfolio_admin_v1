@@ -400,7 +400,7 @@
             </div>
 
             <!-- Projects Section - Full screen height -->
-            <div id="projects" class="min-h-screen bg-accent pt-20">
+            <div id="projects" class="min-h-screen bg-accent pt-16">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full h-full">
                     <!-- Header at the top -->
                     <div class="text-center mb-8 slide-in-top" id="projects-header">
@@ -452,7 +452,7 @@
                                             @endif
                                         </div>
                                         <div class="flex items-center justify-between">
-                                            <div class="text-sm text-secondary bg-accent px-3 py-1 rounded-full border border-tertiary">{{ $project->technologies }}</div>
+                                            <div class="text-sm text-secondary bg-accent px-3 py-1 rounded border border-tertiary">{{ $project->technologies }}</div>
                                         </div>
                                     </div>
                                 </a>
@@ -469,6 +469,8 @@
                     </div>
                 </div>
             </div>
+            <div class="bg-accent py-12"></div>
+            
         </div>
 
         <!-- Footer -->
