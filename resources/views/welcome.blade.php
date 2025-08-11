@@ -337,7 +337,7 @@
                             About Me
                         </h2>
                         <p class="max-w-2xl mx-auto mt-4 text-xl text-secondary">
-                            Passionate developer creating elegant solutions to complex problems.
+                            I am a passionate developer with experience in web development. You can view my complete professional history in my <a href="{{ asset('storage/downloads/ceralboricojr.pdf') }}" class="text-tertiary hover:text-primary font-medium underline hover:no-underline transition-all duration-300" target="_blank" download>resume</a> for more details about my experience and qualifications.
                         </p>
                     </div>
                     
