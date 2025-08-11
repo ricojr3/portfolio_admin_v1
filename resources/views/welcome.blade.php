@@ -346,10 +346,30 @@
                             <h3 class="text-lg font-medium text-primary mb-4 border-b border-tertiary pb-2">My Background</h3>
                             <div class="text-base text-secondary text-justify leading-relaxed">
                                 @if($background)
-                                    {!! $background->content !!}
+                                    @php
+                                        // Check if content contains (resume) and replace it with a download link
+                                        $content = $background->content;
+                                        $resumePattern = '/\(resume\)/i';
+                                        
+                                        if (preg_match($resumePattern, $content)) {
+                                            $resumeLink = '<a href="' . route('download.resume') . '" class="inline-flex items-center px-3 py-1 bg-tertiary text-accent rounded-full text-sm font-medium hover:bg-secondary transition-all duration-300 hover:scale-105 ml-1 mr-1" target="_blank">
+                                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                </svg>
+                                                Resume
+                                            </a>';
+                                            $content = preg_replace($resumePattern, $resumeLink, $content);
+                                        }
+                                    @endphp
+                                    {!! $content !!}
                                 @else
                                     <p class="mb-4">
-                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent varius dolor purus, et eleifend lectus congue id. Quisque eu metus sit amet augue rutrum ullamcorper. Ut vitae odio tincidunt, lobortis est vitae, venenatis odio. Aliquam hendrerit semper est, et luctus eros ornare quis.
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent varius dolor purus, et eleifend lectus congue id. You can download my <a href="{{ route('download.resume') }}" class="inline-flex items-center px-3 py-1 bg-tertiary text-accent rounded-full text-sm font-medium hover:bg-secondary transition-all duration-300 hover:scale-105 ml-1 mr-1" target="_blank">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                            Resume
+                                        </a> to learn more about my experience.
                                     </p>
                                     <p>
                                         Praesent dignissim hendrerit pulvinar. Integer consectetur rutrum tortor, non fermentum metus finibus et. Nullam vitae arcu at orci porta tempus nec a sem. Donec vel justo ut erat malesuada volutpat pellentesque non lectus.
@@ -396,7 +416,7 @@
                     <div class="flex-1 flex items-start justify-center">
                         <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3 w-full" id="projects-grid">
                             @forelse($projects as $project)
-                                <div class="bg-white overflow-hidden shadow-xl rounded-lg border border-tertiary hover-lift transition-all duration-500 project-card">
+                                <a href="{{ route('projects.show', $project) }}" class="bg-white overflow-hidden shadow-xl rounded-lg border border-tertiary hover-lift transition-all duration-500 project-card block">
                                     <div class="relative">
                                         <div class="h-48 bg-tertiary bg-opacity-20 rounded-t-lg overflow-hidden">
                                             @if($project->image)
@@ -433,12 +453,9 @@
                                         </div>
                                         <div class="flex items-center justify-between">
                                             <div class="text-sm text-secondary bg-accent px-3 py-1 rounded-full border border-tertiary">{{ $project->technologies }}</div>
-                                            @if($project->url)
-                                                <a href="{{ $project->url }}" target="_blank" class="text-primary hover:text-secondary font-medium text-sm bg-tertiary hover:bg-secondary text-accent px-4 py-2 rounded transition-all duration-300 hover:scale-105">View Project</a>
-                                            @endif
                                         </div>
                                     </div>
-                                </div>
+                                </a>
                             @empty
                                 <div class="col-span-3 text-center py-12 slide-in-bottom">
                                     <div class="text-tertiary mb-4">

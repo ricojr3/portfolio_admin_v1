@@ -60,6 +60,16 @@ class ProjectController extends Controller
         return redirect()->route('dashboard')->with('success', 'Project created successfully.');
     }
 
+    public function view_project(Project $project)
+    {
+        // Only show visible projects on the public view
+        if (!$project->is_visible) {
+            abort(404);
+        }
+        
+        return view('projects.view_project', compact('project'));
+    }
+
     public function show(Project $project)
     {
         return view('projects.show', compact('project'));

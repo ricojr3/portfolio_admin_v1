@@ -58,4 +58,6 @@ Route::middleware('auth')->group(function () {
     Route::put('contacts/{contact}/toggle', [ContactController::class, 'toggleVisibility'])->name('contacts.toggle');
 });
 
+Route::get('/project/{project}', [ProjectController::class, 'view_project'])->name('projects.show');
+
 require __DIR__.'/auth.php';
