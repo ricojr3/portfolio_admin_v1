@@ -16,12 +16,6 @@
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            {{-- <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
-                </div>
-            </div> --}}
-            
             <!-- Portfolio Content -->
             <!-- Hero Section -->
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
@@ -66,7 +60,7 @@
                             Passionate developer creating elegant solutions to complex problems.
                         </p>
                     </div>
-                    
+
                     <div class="mt-12">
                         <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
                             <div>
@@ -153,12 +147,6 @@
                         </div>
                     </div>
 
-                    {{-- @if(session('success'))
-                        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">
-                            <p>{{ session('success') }}</p>
-                        </div>
-                    @endif --}}
-                    
                     @if(session('success'))
                         <div id="notification" class="fixed top-4 right-4 bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded shadow-md z-50 transform transition-all duration-500 translate-x-0 opacity-100" role="alert">
                             <div class="flex">
@@ -234,7 +222,38 @@
                                         @endif
                                     </div>
                                     <h3 class="text-lg font-medium text-gray-900">{{ $project->title }}</h3>
-                                    <p class="mt-2 text-sm text-gray-600">{{ $project->description }}</p>
+                                    
+                                    <!-- Description with character limit and see more -->
+                                    <div class="mt-2 text-sm text-gray-600">
+                                        @php
+                                            $description = $project->description;
+                                            $limit = 100; // Character limit
+                                            $isLong = strlen($description) > $limit;
+                                            $shortDescription = $isLong ? substr($description, 0, $limit) . '...' : $description;
+                                        @endphp
+                                        
+                                        <span class="description-short-{{ $project->id }}">{{ $shortDescription }}</span>
+                                        
+                                        @if($isLong)
+                                            <span class="description-full-{{ $project->id }}" style="display: none;">{{ $description }}</span>
+                                            <button 
+                                                onclick="toggleDescription({{ $project->id }})" 
+                                                class="see-more-btn-{{ $project->id }} text-indigo-600 hover:text-indigo-900 font-medium ml-1"
+                                                type="button"
+                                            >
+                                                See more
+                                            </button>
+                                            <button 
+                                                onclick="toggleDescription({{ $project->id }})" 
+                                                class="see-less-btn-{{ $project->id }} text-indigo-600 hover:text-indigo-900 font-medium ml-1"
+                                                type="button"
+                                                style="display: none;"
+                                            >
+                                                See less
+                                            </button>
+                                        @endif
+                                    </div>
+                                    
                                     <div class="mt-4 flex items-center justify-between">
                                         <div class="text-xs text-gray-500">{{ $project->technologies }}</div>
                                         @if($project->url)
@@ -319,4 +338,28 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript for description toggle -->
+    <script>
+        function toggleDescription(projectId) {
+            const shortDesc = document.querySelector(`.description-short-${projectId}`);
+            const fullDesc = document.querySelector(`.description-full-${projectId}`);
+            const seeMoreBtn = document.querySelector(`.see-more-btn-${projectId}`);
+            const seeLessBtn = document.querySelector(`.see-less-btn-${projectId}`);
+            
+            if (shortDesc.style.display === 'none') {
+                // Show short description
+                shortDesc.style.display = 'inline';
+                fullDesc.style.display = 'none';
+                seeMoreBtn.style.display = 'inline';
+                seeLessBtn.style.display = 'none';
+            } else {
+                // Show full description
+                shortDesc.style.display = 'none';
+                fullDesc.style.display = 'inline';
+                seeMoreBtn.style.display = 'none';
+                seeLessBtn.style.display = 'inline';
+            }
+        }
+    </script>
 </x-app-layout>

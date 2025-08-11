@@ -50,6 +50,48 @@
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
                         </div>
+
+                        <!-- Screenshots Upload -->
+                        <div class="mb-4">
+                            <label for="screenshots" class="block text-sm font-medium text-gray-700">Screenshots (Optional)</label>
+                            @if($project->screenshots && count($project->screenshots) > 0)
+                                <div class="mt-2 mb-2">
+                                    <div class="grid grid-cols-3 gap-2">
+                                        @foreach($project->screenshots as $screenshot)
+                                            <img src="{{ asset('storage/' . $screenshot) }}" alt="Screenshot" class="w-24 h-24 object-cover rounded-md">
+                                        @endforeach
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">Current screenshots (will be replaced if new ones are uploaded)</p>
+                                </div>
+                            @endif
+                            <input type="file" name="screenshots[]" id="screenshots" multiple accept="image/*" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            <p class="text-xs text-gray-500 mt-1">You can select multiple screenshot images (Leave empty to keep current screenshots)</p>
+                            @error('screenshots')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                            @error('screenshots.*')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Video Upload -->
+                        <div class="mb-4">
+                            <label for="video" class="block text-sm font-medium text-gray-700">Project Video (Optional)</label>
+                            @if($project->video)
+                                <div class="mt-2 mb-2">
+                                    <video width="320" height="240" controls class="rounded-md">
+                                        <source src="{{ asset('storage/' . $project->video) }}" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <p class="text-xs text-gray-500 mt-1">Current video (will be replaced if new one is uploaded)</p>
+                                </div>
+                            @endif
+                            <input type="file" name="video" id="video" accept="video/*" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                            <p class="text-xs text-gray-500 mt-1">Upload a single video file (MP4, WebM, etc.) - Leave empty to keep current video</p>
+                            @error('video')
+                                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                            @enderror
+                        </div>
                         
                         <div class="mb-4">
                             <label for="url" class="block text-sm font-medium text-gray-700">Project URL</label>

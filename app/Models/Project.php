@@ -13,6 +13,8 @@ class Project extends Model
         'title',
         'description',
         'image',
+        'screenshots',
+        'video',
         'technologies',
         'url',
         'is_visible',
@@ -21,6 +23,7 @@ class Project extends Model
     
     protected $casts = [
         'is_visible' => 'boolean',
+        'screenshots' => 'array',
     ];
     
     // Scope to get only visible projects

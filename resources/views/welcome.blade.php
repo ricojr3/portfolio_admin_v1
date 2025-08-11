@@ -413,7 +413,24 @@
                                     </div>
                                     <div class="p-6">
                                         <h3 class="text-lg font-semibold text-primary mb-2">{{ $project->title }}</h3>
-                                        <p class="text-base text-secondary mb-4 leading-relaxed">{{ $project->description }}</p>
+                                        <div class="description-container mb-4">
+                                            @php
+                                                $words = explode(' ', $project->description);
+                                                $isLongDescription = count($words) > 15;
+                                                $truncatedDescription = $isLongDescription ? implode(' ', array_slice($words, 0, 15)) . '...' : $project->description;
+                                            @endphp
+                                            
+                                            @if($isLongDescription)
+                                                <p class="text-base text-secondary leading-relaxed">
+                                                    {{ $truncatedDescription }}
+                                                    <span class="text-tertiary font-medium text-sm ml-1">
+                                                        See more
+                                                    </span>
+                                                </p>
+                                            @else
+                                                <p class="text-base text-secondary leading-relaxed">{{ $project->description }}</p>
+                                            @endif
+                                        </div>
                                         <div class="flex items-center justify-between">
                                             <div class="text-sm text-secondary bg-accent px-3 py-1 rounded-full border border-tertiary">{{ $project->technologies }}</div>
                                             @if($project->url)

@@ -26,13 +26,31 @@ class ProjectController extends Controller
             'description' => 'required',
             'technologies' => 'required|string',
             'image' => 'nullable|image|max:2048',
+            'screenshots' => 'nullable|array',
+            'screenshots.*' => 'image|max:2048',
+            'video' => 'nullable|mimes:mp4,webm,avi,mov|max:20480', // 20MB max
             'url' => 'nullable|url',
             'is_visible' => 'sometimes',
             'order' => 'nullable|integer',
         ]);
         
+        // Handle main project image
         if ($request->hasFile('image')) {
             $validated['image'] = $request->file('image')->store('projects', 'public');
+        }
+        
+        // Handle screenshots
+        if ($request->hasFile('screenshots')) {
+            $screenshotPaths = [];
+            foreach ($request->file('screenshots') as $screenshot) {
+                $screenshotPaths[] = $screenshot->store('projects/screenshots', 'public');
+            }
+            $validated['screenshots'] = $screenshotPaths;
+        }
+        
+        // Handle video
+        if ($request->hasFile('video')) {
+            $validated['video'] = $request->file('video')->store('projects/videos', 'public');
         }
         
         $validated['is_visible'] = $request->has('is_visible');
@@ -59,16 +77,44 @@ class ProjectController extends Controller
             'description' => 'required',
             'technologies' => 'required|string',
             'image' => 'nullable|image|max:2048',
+            'screenshots' => 'nullable|array',
+            'screenshots.*' => 'image|max:2048',
+            'video' => 'nullable|mimes:mp4,webm,avi,mov|max:20480',
             'url' => 'nullable|url',
             'is_visible' => 'sometimes',
             'order' => 'nullable|integer',
         ]);
         
+        // Handle main project image
         if ($request->hasFile('image')) {
             if ($project->image) {
                 Storage::disk('public')->delete($project->image);
             }
             $validated['image'] = $request->file('image')->store('projects', 'public');
+        }
+        
+        // Handle screenshots
+        if ($request->hasFile('screenshots')) {
+            // Delete old screenshots
+            if ($project->screenshots) {
+                foreach ($project->screenshots as $screenshot) {
+                    Storage::disk('public')->delete($screenshot);
+                }
+            }
+            
+            $screenshotPaths = [];
+            foreach ($request->file('screenshots') as $screenshot) {
+                $screenshotPaths[] = $screenshot->store('projects/screenshots', 'public');
+            }
+            $validated['screenshots'] = $screenshotPaths;
+        }
+        
+        // Handle video
+        if ($request->hasFile('video')) {
+            if ($project->video) {
+                Storage::disk('public')->delete($project->video);
+            }
+            $validated['video'] = $request->file('video')->store('projects/videos', 'public');
         }
         
         $validated['is_visible'] = $request->has('is_visible');
@@ -80,8 +126,21 @@ class ProjectController extends Controller
 
     public function destroy(Project $project)
     {
+        // Delete main image
         if ($project->image) {
             Storage::disk('public')->delete($project->image);
+        }
+        
+        // Delete screenshots
+        if ($project->screenshots) {
+            foreach ($project->screenshots as $screenshot) {
+                Storage::disk('public')->delete($screenshot);
+            }
+        }
+        
+        // Delete video
+        if ($project->video) {
+            Storage::disk('public')->delete($project->video);
         }
         
         $project->delete();
